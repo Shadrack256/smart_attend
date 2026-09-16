@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create account · Smart Attend</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232f5bff'/><text x='50' y='68' font-size='60' text-anchor='middle' fill='white' font-family='Inter,sans-serif' font-weight='bold'>S</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+    tailwind.config = {
+        theme: { extend: {
+            colors: { brand: { 50:'#eef4ff',100:'#dbe7ff',200:'#bcd0ff',300:'#8eb0ff',400:'#5885ff',500:'#2f5bff',600:'#1a3ff0',700:'#152fd0',800:'#182ba8',900:'#1a2b85' } },
+            fontFamily: { sans: ['Inter','ui-sans-serif','system-ui','sans-serif'] },
+            boxShadow: { card: '0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.10)' },
+        }}
+    }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Inter', system-ui, sans-serif; } </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen">
+
+<div class="min-h-screen flex items-center justify-center p-6">
+    <div class="w-full max-w-md">
+
+        <div class="text-center mb-8">
+            <a href="../index.html" class="inline-block">
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-600 text-white font-bold text-xl mb-4">S</div>
+            </a>
+            <h1 class="text-2xl font-bold text-slate-900">Create your account</h1>
+            <p class="text-sm text-slate-500 mt-1">Join Smart Attend</p>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-card p-8">
+            <form class="space-y-4" onsubmit="return fakeRegister(event)">
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Role</label>
+                    <select id="role" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <option value="student">Student</option>
+                        <option value="lecturer">Lecturer</option>
+                    </select>
+                </div>
+
+                <div id="regRow">
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Registration number</label>
+                    <input name="reg_number" placeholder="e.g. CSC/2024/001"
+                           class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Full name</label>
+                    <input name="full_name" required class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Email</label>
+                    <input name="email" type="email" required class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
+                    <input name="password" type="password" required minlength="6" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+
+                <button class="w-full rounded-lg bg-brand-600 text-white py-2.5 text-sm font-semibold hover:bg-brand-700 shadow-sm transition">
+                    Create account
+                </button>
+            </form>
+
+            <p class="mt-6 text-center text-sm text-slate-500">
+                Already have an account?
+                <a href="login.html" class="font-medium text-brand-600 hover:text-brand-700">Sign in</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    lucide.createIcons();
+    const role = document.getElementById('role');
+    role.addEventListener('change', () => {
+        document.getElementById('regRow').style.display = role.value === 'student' ? 'block' : 'none';
+    });
+    function fakeRegister(e) {
+        e.preventDefault();
+        window.location.href = 'login.html';
+        return false;
+    }
+</script>
+</body>
+</html>
