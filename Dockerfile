@@ -10,8 +10,6 @@ RUN apt-get update && apt-get install -y \
 RUN a2enmod rewrite
 
 # --- Render Port Configuration ---
-# Render provides the port via the PORT environment variable.
-# We set it to 10000 as a default if it's not provided.
 ENV PORT 10000
 
 # 1. Change the default 'Listen 80' directive to 'Listen 10000'
