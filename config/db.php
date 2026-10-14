@@ -10,19 +10,29 @@ session_set_cookie_params([
 ]);
 session_start();
 
-$host = 'localhost';
-$db   = 'smart_attend';
-$user = 'root';
-$pass = '';
+// ------------------------------------------------------------------
+// Supabase (PostgreSQL) Connection Settings
+// ------------------------------------------------------------------
+// In Render, set these as Environment Variables. 
+// If not set, it falls back to the values below.
+$host = getenv('DB_HOST') ?: 'aws-0-eu-west-1.pooler.supabase.com'; // Your Ireland Pooler address
+$port = getenv('DB_PORT') ?: '5432';
+$db   = getenv('DB_NAME') ?: 'postgres';
+$user = getenv('DB_USER') ?: 'postgres.jayhqcbwyehgnthnobvsu'; // Your Project Ref
+$pass = getenv('DB_PASS') ?: 'YOUR-SUPABASE-PASSWORD'; // Replace with your actual password
 
 if (empty($_SESSION['csrf'])) {
     $_SESSION['csrf'] = bin2hex(random_bytes(32));
 }
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass, [
+    // PostgreSQL DSN string. Note the 'sslmode=require' which Supabase needs.
+    $dsn = "pgsql:host=$host;port=$port;dbname=$db;sslmode=require";
+    
+    $pdo = new PDO($dsn, $user, $pass, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false, // Important for PostgreSQL
     ]);
 } catch (PDOException $e) {
     die("DB Connection failed: " . $e->getMessage());
@@ -30,12 +40,11 @@ try {
 
 // ------------------------------------------------------------------
 // Auto-close sessions older than 3 hours AND mark non-scanners absent.
-// Mirrors what end_session() does when a lecturer clicks "End session".
 // ------------------------------------------------------------------
 try {
     $expired = $pdo->query("
         SELECT id FROM sessions
-        WHERE is_active = 1 AND start_time < NOW() - INTERVAL 3 HOUR
+        WHERE is_active = 1 AND start_time < NOW() - INTERVAL '3 hours'
     ")->fetchAll(PDO::FETCH_COLUMN);
 
     if ($expired) {
@@ -50,12 +59,14 @@ try {
             WHERE id = ?
         ");
 
+        // PostgreSQL uses ON CONFLICT instead of INSERT IGNORE
         $ins = $pdo->prepare("
-            INSERT IGNORE INTO attendance (session_id, student_id, status, marked_at)
+            INSERT INTO attendance (session_id, student_id, status, marked_at)
             SELECT ?, e.student_id, 'absent', NOW()
             FROM enrollments e
             JOIN sessions s ON s.course_id = e.course_id
             WHERE s.id = ?
+            ON CONFLICT (session_id, student_id) DO NOTHING
         ");
 
         foreach ($expired as $sid) {
@@ -74,7 +85,6 @@ function is_logged_in() { return isset($_SESSION['user_id']); }
 
 function require_role($role) {
     if (!is_logged_in() || $_SESSION['role'] !== $role) {
-        // Portable redirect: works regardless of install folder.
         header("Location: ../auth/login.php");
         exit;
     }
@@ -168,12 +178,14 @@ function end_session($pdo, $session_id) {
             WHERE id = ?
         ")->execute([$session_id]);
 
+        // PostgreSQL ON CONFLICT syntax
         $pdo->prepare("
-            INSERT IGNORE INTO attendance (session_id, student_id, status, marked_at)
+            INSERT INTO attendance (session_id, student_id, status, marked_at)
             SELECT ?, e.student_id, 'absent', NOW()
             FROM enrollments e
             JOIN sessions s ON s.course_id = e.course_id
             WHERE s.id = ?
+            ON CONFLICT (session_id, student_id) DO NOTHING
         ")->execute([$session_id, $session_id]);
 
         $count = $pdo->prepare("
@@ -238,3 +250,4 @@ function brand_palette($hex) {
         '900' => $mixBlack(0.55),
     ];
 }
+?>
