@@ -7,11 +7,11 @@ header('Content-Type: application/json');
 $data = json_decode(file_get_contents('php://input'), true);
 $student_id = $_SESSION['user_id'];
 
-// Auto-close sessions older than 2 hours
-$pdo->prepare("UPDATE sessions SET is_active=0 WHERE is_active=1 AND start_time < NOW() - INTERVAL 2 HOUR")
+// Auto-close sessions older than 2 hours (PostgreSQL interval syntax)
+$pdo->prepare("UPDATE sessions SET is_active=0 WHERE is_active=1 AND start_time < NOW() - INTERVAL '2 hours'")
     ->execute();
 
-// --- 1. Validate session & token (existing logic) ---
+// --- 1. Validate session & token ---
 $stmt = $pdo->prepare("SELECT * FROM sessions WHERE id=? AND is_active=1");
 $stmt->execute([$data['session_id'] ?? 0]);
 $session = $stmt->fetch();
@@ -45,11 +45,9 @@ $geoEnabled = $pdo->query("SELECT v FROM settings WHERE k='geofence_enabled'")->
 
 $distance_m = null;
 if ($geoEnabled) {
-    // Session must have coordinates
     if ($session['latitude'] === null || $session['longitude'] === null) {
         echo json_encode(['success'=>false,'message'=>'This session has no geofence set. Contact your lecturer.']); exit;
     }
-    // Client must have sent coordinates
     if (!isset($data['lat'], $data['lng']) ||
         !is_numeric($data['lat']) || !is_numeric($data['lng'])) {
         echo json_encode(['success'=>false,'message'=>'Location required to mark attendance']); exit;
@@ -59,7 +57,6 @@ if ($geoEnabled) {
     $studentLng = (float)$data['lng'];
     $accuracy   = (float)($data['accuracy'] ?? 0);
 
-    // Reject obviously bogus coordinates
     if (abs($studentLat) > 90 || abs($studentLng) > 180 ||
         ($studentLat === 0.0 && $studentLng === 0.0)) {
         echo json_encode(['success'=>false,'message'=>'Invalid location data']); exit;
@@ -70,9 +67,6 @@ if ($geoEnabled) {
         $studentLat,                  $studentLng
     ));
 
-    // Add the GPS accuracy as a safety buffer.
-    // If a phone reports ±30 m accuracy, we allow radius + accuracy.
-    // Cap the buffer so students can't fake "accuracy: 500".
     $buffer = min($accuracy, 50);
     $allowed = $session['radius_m'] + $buffer;
 
