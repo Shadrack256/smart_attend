@@ -6,12 +6,21 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && docker-php-ext-install pdo pdo_pgsql
 
-# Enable Apache rewrite module (often needed for PHP routing)
+# Enable Apache rewrite module
 RUN a2enmod rewrite
 
-# Set the Apache document root to your project folder
-# Adjust if your entry point is not in a 'public' folder. 
-# Since your index.php is likely in the root, we keep it as /var/www/html
+# --- Render Port Configuration ---
+# Render provides the port via the PORT environment variable.
+# We set it to 10000 as a default if it's not provided.
+ENV PORT 10000
+
+# 1. Change the default 'Listen 80' directive to 'Listen 10000'
+RUN sed -i "s/Listen 80/Listen ${PORT}/g" /etc/apache2/ports.conf
+
+# 2. Update the default virtual host to use the new port
+RUN sed -i "s/:80/:${PORT}/g" /etc/apache2/sites-available/000-default.conf
+
+# Set the Apache document root
 ENV APACHE_DOCUMENT_ROOT /var/www/html
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
@@ -21,3 +30,9 @@ COPY . /var/www/html/
 
 # Set proper permissions for Apache
 RUN chown -R www-data:www-data /var/www/html
+
+# Expose the port for documentation
+EXPOSE 10000
+
+# Start Apache in the foreground
+CMD ["apache2-foreground"]
