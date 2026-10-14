@@ -38,7 +38,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enroll'])) {
     if (!$ids) {
         $_SESSION['flash'] = ['type'=>'error','msg'=>'No students selected.'];
     } else {
-        $stmt = $pdo->prepare("INSERT IGNORE INTO enrollments (student_id, course_id) VALUES (?, ?)");
+        // PostgreSQL ON CONFLICT syntax instead of INSERT IGNORE
+        $stmt = $pdo->prepare("
+            INSERT INTO enrollments (student_id, course_id) 
+            VALUES (?, ?) 
+            ON CONFLICT (student_id, course_id) DO NOTHING
+        ");
         $added = 0;
         foreach ($ids as $sid) {
             $stmt->execute([$sid, $course_id]);
