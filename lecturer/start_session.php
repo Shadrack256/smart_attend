@@ -19,12 +19,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Course not found or not yours.");
     }
 
+    // PostgreSQL uses CURRENT_DATE instead of CURDATE(), 
+    // and RETURNING id instead of lastInsertId()
     $stmt = $pdo->prepare("
         INSERT INTO sessions (course_id, session_date, start_time, is_active, latitude, longitude, radius_m)
-        VALUES (?, CURDATE(), NOW(), 1, ?, ?, ?)
+        VALUES (?, CURRENT_DATE, NOW(), 1, ?, ?, ?)
+        RETURNING id
     ");
     $stmt->execute([$course_id, $lat, $lng, $radius]);
-    $session_id = $pdo->lastInsertId();
+    $session_id = $stmt->fetchColumn(); // Gets the newly created session ID
 
     header("Location: display_qr.php?session_id=$session_id");
     exit;
