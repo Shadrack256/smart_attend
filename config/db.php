@@ -19,7 +19,7 @@ $host = getenv('DB_HOST') ?: 'aws-0-eu-west-1.pooler.supabase.com'; // Your Irel
 $port = getenv('DB_PORT') ?: '5432';
 $db   = getenv('DB_NAME') ?: 'postgres';
 $user = getenv('DB_USER') ?: 'postgres.jayhqcbwyehgnthnobvsu'; // Your Project Ref
-$pass = getenv('DB_PASS') ?: 'YOUR-SUPABASE-PASSWORD'; // Replace with your actual password
+$pass = getenv('DB_PASS') ?: 'Shadrack@4xs29ptm'; // Replace with your actual password
 
 if (empty($_SESSION['csrf'])) {
     $_SESSION['csrf'] = bin2hex(random_bytes(32));
