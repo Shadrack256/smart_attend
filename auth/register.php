@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password   = $_POST['password'] ?? '';
     $confirm    = $_POST['confirm'] ?? '';
 
-    // Force role to student on public registration (lecturers/admins created by admin)
+    // Force role to student on public registration
     $role = 'student';
 
     // Validate
@@ -37,7 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: login.php");
             exit;
         } catch (PDOException $e) {
-            if ($e->getCode() === '23000') {
+            // PostgreSQL uses '23505' for unique violation (MySQL used '23000')
+            if ($e->getCode() === '23505') {
                 $error = 'That email or registration number is already registered.';
             } else {
                 $error = 'Registration failed. Please try again.';
@@ -45,6 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
+// ... [Rest of your HTML remains exactly the same] ...
 
 // ---------- Background image ----------
 $bgFile    = $brand['login_bg'] ?? '';
