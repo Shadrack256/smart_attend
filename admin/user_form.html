@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard · Admin · Smart Attend</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232f5bff'/><text x='50' y='68' font-size='60' text-anchor='middle' fill='white' font-family='Inter,sans-serif' font-weight='bold'>S</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+    tailwind.config = {
+        theme: { extend: {
+            colors: { brand: { 50:'#eef4ff',100:'#dbe7ff',200:'#bcd0ff',300:'#8eb0ff',400:'#5885ff',500:'#2f5bff',600:'#1a3ff0',700:'#152fd0',800:'#182ba8',900:'#1a2b85' } },
+            fontFamily: { sans: ['Inter','ui-sans-serif','system-ui','sans-serif'] },
+            boxShadow: { card: '0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.10)' },
+        }}
+    }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen">
+
+<div class="min-h-screen flex flex-col md:flex-row">
+
+    <!-- Sidebar -->
+    <aside class="md:w-64 md:shrink-0 bg-slate-900 text-slate-300 md:min-h-screen">
+        <div class="flex md:flex-col items-center md:items-stretch gap-3 p-4 md:p-6 border-b border-slate-800">
+            <a href="dashboard.html" class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-brand-500 grid place-items-center text-white font-bold">S</div>
+                <div class="hidden md:block">
+                    <div class="text-white font-semibold leading-tight">SmartAttend</div>
+                    <div class="text-xs text-slate-400">Admin Console</div>
+                </div>
+            </a>
+        </div>
+
+        <nav class="flex md:flex-col overflow-x-auto md:overflow-visible no-scrollbar px-2 md:px-3 py-2 md:py-4 gap-1">
+            <a href="dashboard.html" class="flex items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium bg-brand-600 text-white shadow-sm">
+                <i data-lucide="layout-dashboard" class="w-4 h-4"></i><span>Dashboard</span>
+            </a>
+            <a href="users.html" class="flex items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white">
+                <i data-lucide="users" class="w-4 h-4"></i><span>Users</span>
+            </a>
+            <a href="courses.html" class="flex items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white">
+                <i data-lucide="book-open" class="w-4 h-4"></i><span>Courses</span>
+            </a>
+            <a href="enrollments.html" class="flex items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white">
+                <i data-lucide="user-plus" class="w-4 h-4"></i><span>Enrollments</span>
+            </a>
+            <a href="reports.html" class="flex items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white">
+                <i data-lucide="bar-chart-3" class="w-4 h-4"></i><span>Reports</span>
+            </a>
+            <a href="settings.html" class="flex items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white">
+                <i data-lucide="settings" class="w-4 h-4"></i><span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="hidden md:block mt-auto p-4 border-t border-slate-800">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full bg-slate-700 grid place-items-center text-sm font-semibold text-white">A</div>
+                <div class="min-w-0">
+                    <div class="text-sm text-white truncate">System Admin</div>
+                    <div class="text-xs text-slate-400">Administrator</div>
+                </div>
+            </div>
+            <a href="../auth/login.html" class="mt-3 flex items-center justify-center gap-2 w-full rounded-lg bg-slate-800 hover:bg-rose-600 text-white text-sm py-2 transition">
+                <i data-lucide="log-out" class="w-4 h-4"></i> Sign out
+            </a>
+        </div>
+    </aside>
+
+    <main class="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold tracking-tight text-slate-900">New user</h1>
+            <p class="mt-1 text-sm text-slate-500">Create a new account for a student, lecturer, or admin.</p>
+        </div>
+
+        <form onsubmit="return false" class="max-w-2xl">
+            <div class="bg-white rounded-xl border border-slate-200 shadow-card">
+                <div class="p-6 space-y-5">
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Full name</label>
+                        <input required class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Email</label>
+                        <input type="email" required class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Role</label>
+                        <select id="role" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            <option value="student">Student</option>
+                            <option value="lecturer">Lecturer</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+
+                    <div id="regRow">
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Registration number</label>
+                        <input class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    </div>
+
+                    <div id="staffRow" class="hidden">
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Staff ID</label>
+                        <input class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
+                        <input type="password" required minlength="6" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    </div>
+
+                </div>
+
+                <div class="px-6 py-4 border-t border-slate-100 flex items-center justify-end gap-3">
+                    <a href="users.html" class="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Cancel</a>
+                    <button class="rounded-lg bg-brand-600 text-white px-4 py-2 text-sm font-semibold hover:bg-brand-700 shadow-sm">Create user</button>
+                </div>
+            </div>
+        </form>
+    </main>
+</div>
+<script>
+    lucide.createIcons();
+    const role = document.getElementById('role');
+    function toggle() {
+        document.getElementById('regRow').classList.toggle('hidden',   role.value !== 'student');
+        document.getElementById('staffRow').classList.toggle('hidden', role.value !== 'lecturer');
+    }
+    role.addEventListener('change', toggle); toggle();
+</script>
+</body>
+</html>

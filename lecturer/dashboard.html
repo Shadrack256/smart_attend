@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecturer · Smart Attend</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232f5bff'/><text x='50' y='68' font-size='60' text-anchor='middle' fill='white' font-family='Inter,sans-serif' font-weight='bold'>S</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+    tailwind.config = { theme: { extend: {
+        colors: { brand: { 50:'#eef4ff',100:'#dbe7ff',200:'#bcd0ff',300:'#8eb0ff',400:'#5885ff',500:'#2f5bff',600:'#1a3ff0',700:'#152fd0',800:'#182ba8',900:'#1a2b85' } },
+        fontFamily: { sans: ['Inter','ui-sans-serif','system-ui','sans-serif'] },
+        boxShadow: { card: '0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.10)' },
+    }}}
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Inter', system-ui, sans-serif; } </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen">
+
+<div class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
+
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+        <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-xl bg-brand-600 grid place-items-center text-white font-bold">S</div>
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900">Dr. Sarah Kimani</h1>
+                <p class="text-sm text-slate-500">Lecturer dashboard</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <a href="start_session.html"
+               class="inline-flex items-center gap-2 rounded-lg bg-brand-600 text-white px-4 py-2.5 text-sm font-semibold hover:bg-brand-700 shadow-sm">
+                <i data-lucide="play" class="w-4 h-4"></i> Start session
+            </a>
+            <a href="../auth/login.html"
+               class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">
+                Sign out
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white rounded-xl border border-slate-200 shadow-card p-5">
+            <div class="w-9 h-9 rounded-lg grid place-items-center bg-brand-50 text-brand-700 mb-3">
+                <i data-lucide="book-open" class="w-5 h-5"></i>
+            </div>
+            <div class="text-2xl font-bold text-slate-900 tabular-nums">3</div>
+            <div class="text-xs uppercase tracking-wide text-slate-500 mt-1">My courses</div>
+        </div>
+        <div class="bg-white rounded-xl border border-slate-200 shadow-card p-5">
+            <div class="w-9 h-9 rounded-lg grid place-items-center bg-violet-50 text-violet-700 mb-3">
+                <i data-lucide="calendar" class="w-5 h-5"></i>
+            </div>
+            <div class="text-2xl font-bold text-slate-900 tabular-nums">12</div>
+            <div class="text-xs uppercase tracking-wide text-slate-500 mt-1">Sessions run</div>
+        </div>
+        <div class="bg-white rounded-xl border border-slate-200 shadow-card p-5">
+            <div class="w-9 h-9 rounded-lg grid place-items-center bg-emerald-50 text-emerald-700 mb-3">
+                <i data-lucide="users" class="w-5 h-5"></i>
+            </div>
+            <div class="text-2xl font-bold text-slate-900 tabular-nums">111</div>
+            <div class="text-xs uppercase tracking-wide text-slate-500 mt-1">Enrolled students</div>
+        </div>
+        <div class="bg-white rounded-xl border border-slate-200 shadow-card p-5">
+            <div class="w-9 h-9 rounded-lg grid place-items-center bg-amber-50 text-amber-700 mb-3">
+                <i data-lucide="activity" class="w-5 h-5"></i>
+            </div>
+            <div class="text-2xl font-bold text-slate-900 tabular-nums">Live</div>
+            <div class="text-xs uppercase tracking-wide text-slate-500 mt-1">CSC101 · 09:00</div>
+        </div>
+    </div>
+
+    <!-- My courses -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-card overflow-hidden mb-6">
+        <div class="px-5 py-4 border-b border-slate-100">
+            <h2 class="font-semibold text-slate-900">My courses</h2>
+        </div>
+        <div class="divide-y divide-slate-100">
+            <div class="px-5 py-4 flex items-center justify-between hover:bg-slate-50/70">
+                <div class="flex items-center gap-4">
+                    <span class="inline-flex items-center rounded-md bg-brand-50 text-brand-700 px-2 py-1 text-xs font-semibold font-mono">CSC101</span>
+                    <div>
+                        <div class="font-medium text-slate-900">Introduction to Computer Science</div>
+                        <div class="text-xs text-slate-500">42 students</div>
+                    </div>
+                </div>
+                <a href="start_session.html" class="inline-flex items-center gap-2 rounded-lg bg-slate-900 text-white px-3.5 py-2 text-xs font-medium hover:bg-slate-800">
+                    <i data-lucide="play" class="w-3.5 h-3.5"></i> Start
+                </a>
+            </div>
+            <div class="px-5 py-4 flex items-center justify-between hover:bg-slate-50/70">
+                <div class="flex items-center gap-4">
+                    <span class="inline-flex items-center rounded-md bg-brand-50 text-brand-700 px-2 py-1 text-xs font-semibold font-mono">CSC201</span>
+                    <div>
+                        <div class="font-medium text-slate-900">Data Structures &amp; Algorithms</div>
+                        <div class="text-xs text-slate-500">38 students</div>
+                    </div>
+                </div>
+                <a href="start_session.html" class="inline-flex items-center gap-2 rounded-lg bg-slate-900 text-white px-3.5 py-2 text-xs font-medium hover:bg-slate-800">
+                    <i data-lucide="play" class="w-3.5 h-3.5"></i> Start
+                </a>
+            </div>
+            <div class="px-5 py-4 flex items-center justify-between hover:bg-slate-50/70">
+                <div class="flex items-center gap-4">
+                    <span class="inline-flex items-center rounded-md bg-brand-50 text-brand-700 px-2 py-1 text-xs font-semibold font-mono">CSC301</span>
+                    <div>
+                        <div class="font-medium text-slate-900">Database Systems</div>
+                        <div class="text-xs text-slate-500">31 students</div>
+                    </div>
+                </div>
+                <a href="start_session.html" class="inline-flex items-center gap-2 rounded-lg bg-slate-900 text-white px-3.5 py-2 text-xs font-medium hover:bg-slate-800">
+                    <i data-lucide="play" class="w-3.5 h-3.5"></i> Start
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent sessions -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-card overflow-hidden">
+        <div class="px-5 py-4 border-b border-slate-100">
+            <h2 class="font-semibold text-slate-900">Recent sessions</h2>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-slate-50 text-slate-500 text-left text-xs uppercase tracking-wide">
+                    <tr>
+                        <th class="px-5 py-3 font-semibold">Date</th>
+                        <th class="px-5 py-3 font-semibold">Course</th>
+                        <th class="px-5 py-3 font-semibold text-center">Present</th>
+                        <th class="px-5 py-3 font-semibold text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    <tr class="hover:bg-slate-50/70">
+                        <td class="px-5 py-3 text-slate-700">2026-09-12 09:00</td>
+                        <td class="px-5 py-3"><span class="inline-flex items-center rounded-md bg-brand-50 text-brand-700 px-2 py-0.5 text-xs font-semibold font-mono">CSC101</span></td>
+                        <td class="px-5 py-3 text-center tabular-nums">38 / 42</td>
+                        <td class="px-5 py-3 text-right">
+                            <a href="session_live.html" class="inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium text-brand-600 hover:bg-brand-50"><i data-lucide="eye" class="w-3.5 h-3.5"></i> View</a>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/70">
+                        <td class="px-5 py-3 text-slate-700">2026-09-10 11:00</td>
+                        <td class="px-5 py-3"><span class="inline-flex items-center rounded-md bg-brand-50 text-brand-700 px-2 py-0.5 text-xs font-semibold font-mono">CSC201</span></td>
+                        <td class="px-5 py-3 text-center tabular-nums">35 / 38</td>
+                        <td class="px-5 py-3 text-right">
+                            <a href="session_live.html" class="inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium text-brand-600 hover:bg-brand-50"><i data-lucide="eye" class="w-3.5 h-3.5"></i> View</a>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/70">
+                        <td class="px-5 py-3 text-slate-700">2026-09-08 14:00</td>
+                        <td class="px-5 py-3"><span class="inline-flex items-center rounded-md bg-brand-50 text-brand-700 px-2 py-0.5 text-xs font-semibold font-mono">CSC301</span></td>
+                        <td class="px-5 py-3 text-center tabular-nums">28 / 31</td>
+                        <td class="px-5 py-3 text-right">
+                            <a href="session_live.html" class="inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium text-brand-600 hover:bg-brand-50"><i data-lucide="eye" class="w-3.5 h-3.5"></i> View</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+<script>lucide.createIcons();</script>
+</body>
+</html>

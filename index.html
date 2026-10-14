@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Attend — QR + GPS Verified Attendance</title>
+    <meta name="description" content="QR code and GPS-verified attendance system for modern classrooms. Lecturers display a rotating QR code, students scan and attendance is captured instantly.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Smart Attend — QR Verified Attendance">
+    <meta property="og:description" content="QR code + GPS verified attendance for modern classrooms.">
+    <meta property="og:type" content="website">
+
+    <!-- Favicon (inline SVG) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232f5bff'/><text x='50' y='68' font-size='60' text-anchor='middle' fill='white' font-family='Inter,sans-serif' font-weight='bold'>S</text></svg>">
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Tailwind theme -->
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    brand: {
+                        50:  '#eef4ff',
+                        100: '#dbe7ff',
+                        200: '#bcd0ff',
+                        300: '#8eb0ff',
+                        400: '#5885ff',
+                        500: '#2f5bff',
+                        600: '#1a3ff0',
+                        700: '#152fd0',
+                        800: '#182ba8',
+                        900: '#1a2b85',
+                    },
+                },
+                fontFamily: {
+                    sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                },
+                boxShadow: {
+                    card: '0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.10)',
+                },
+            },
+        },
+    };
+    </script>
+
+    <!-- Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+        body { font-family: 'Inter', system-ui, sans-serif; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up { animation: fadeUp .6s ease-out both; }
+
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; }
+            50%      { opacity: .4; }
+        }
+        .pulse-dot { animation: pulseDot 1.5s ease-in-out infinite; }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen">
+
+<!-- ============ NAVBAR ============ -->
+<header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-slate-200">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-brand-600 grid place-items-center text-white font-bold">S</div>
+            <span class="font-bold text-slate-900">Smart<span class="text-brand-600">Attend</span></span>
+        </a>
+
+        <div class="hidden md:flex items-center gap-8">
+            <a href="#features" class="text-sm font-medium text-slate-600 hover:text-slate-900">Features</a>
+            <a href="#how" class="text-sm font-medium text-slate-600 hover:text-slate-900">How it works</a>
+            <a href="#roles" class="text-sm font-medium text-slate-600 hover:text-slate-900">For whom</a>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <a href="auth/login.php"
+               class="hidden sm:inline-flex items-center rounded-lg px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition">
+                Sign in
+            </a>
+            <a href="auth/login.php" class="sm:hidden inline-flex p-2 rounded-lg hover:bg-slate-100">
+                <i data-lucide="log-in" class="w-5 h-5 text-slate-700"></i>
+            </a>
+            <a href="auth/register.php"
+               class="inline-flex items-center gap-2 rounded-lg bg-brand-600 text-white px-3.5 py-2 text-sm font-semibold hover:bg-brand-700 shadow-sm transition">
+                Get started
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+        </div>
+    </nav>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="relative overflow-hidden">
+    <div class="absolute inset-0 -z-10">
+        <div class="absolute top-0 -left-24 w-96 h-96 rounded-full bg-brand-200/40 blur-3xl"></div>
+        <div class="absolute top-32 -right-24 w-96 h-96 rounded-full bg-violet-200/40 blur-3xl"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
+        <div class="grid lg:grid-cols-12 gap-12 items-center">
+
+            <!-- Left column -->
+            <div class="lg:col-span-7 fade-up">
+                <div class="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700 mb-6">
+                    <span class="w-1.5 h-1.5 rounded-full bg-brand-500 pulse-dot"></span>
+                    QR + GPS verified attendance
+                </div>
+
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 leading-[1.05]">
+                    Attendance that
+                    <span class="bg-gradient-to-r from-brand-600 to-violet-600 bg-clip-text text-transparent">
+                        marks itself.
+                    </span>
+                </h1>
+
+                <p class="mt-6 text-lg text-slate-600 max-w-xl">
+                    Lecturers display a rotating QR code. Students scan it from their phones.
+                    Attendance is captured instantly — verified by location, time, and identity.
+                </p>
+
+                <div class="mt-8 flex flex-wrap gap-3">
+                    <a href="auth/register.php"
+                       class="inline-flex items-center gap-2 rounded-lg bg-brand-600 text-white px-5 py-3 text-sm font-semibold hover:bg-brand-700 shadow-sm transition">
+                        Create an account
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                    <a href="auth/login.php"
+                       class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">
+                        <i data-lucide="log-in" class="w-4 h-4"></i>
+                        Sign in
+                    </a>
+                </div>
+
+                <!-- Quick stats (static placeholders for HTML version) -->
+                <div class="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl">
+                    <div class="rounded-xl border border-slate-200 bg-white/70 backdrop-blur px-4 py-3">
+                        <div class="flex items-center gap-2 text-slate-400 text-xs uppercase tracking-wide mb-1">
+                            <i data-lucide="graduation-cap" class="w-3.5 h-3.5"></i> Students
+                        </div>
+                        <div class="text-xl font-bold text-slate-900 tabular-nums">240+</div>
+                    </div>
+                    <div class="rounded-xl border border-slate-200 bg-white/70 backdrop-blur px-4 py-3">
+                        <div class="flex items-center gap-2 text-slate-400 text-xs uppercase tracking-wide mb-1">
+                            <i data-lucide="presentation" class="w-3.5 h-3.5"></i> Lecturers
+                        </div>
+                        <div class="text-xl font-bold text-slate-900 tabular-nums">18</div>
+                    </div>
+                    <div class="rounded-xl border border-slate-200 bg-white/70 backdrop-blur px-4 py-3">
+                        <div class="flex items-center gap-2 text-slate-400 text-xs uppercase tracking-wide mb-1">
+                            <i data-lucide="book-open" class="w-3.5 h-3.5"></i> Courses
+                        </div>
+                        <div class="text-xl font-bold text-slate-900 tabular-nums">12</div>
+                    </div>
+                    <div class="rounded-xl border border-slate-200 bg-white/70 backdrop-blur px-4 py-3">
+                        <div class="flex items-center gap-2 text-slate-400 text-xs uppercase tracking-wide mb-1">
+                            <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Records
+                        </div>
+                        <div class="text-xl font-bold text-slate-900 tabular-nums">3.1k</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right column — mockup card -->
+            <div class="lg:col-span-5">
+                <div class="relative">
+                    <div class="absolute -inset-4 bg-gradient-to-tr from-brand-500/20 to-violet-500/20 rounded-3xl blur-2xl"></div>
+
+                    <div class="relative bg-white rounded-3xl border border-slate-200 shadow-xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <div class="text-xs text-slate-400">Live session</div>
+                                <div class="font-semibold text-slate-900">CSC101 · Intro to CS</div>
+                            </div>
+                            <div class="flex items-center gap-1.5 text-xs text-emerald-600 font-medium">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 pulse-dot"></span>
+                                Live
+                            </div>
+                        </div>
+
+                        <!-- Decorative QR grid -->
+                        <div class="aspect-square max-w-[240px] mx-auto rounded-2xl bg-slate-50 border border-slate-100 grid place-items-center mb-4">
+                            <div class="grid grid-cols-7 gap-1">
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-200"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-200"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-200"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-200"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-200"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-200"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-200"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-200"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-200"></div>
+
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-200"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-200"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-200"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-200"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-200"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-200"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                                <div class="w-3 h-3 rounded-[2px] bg-slate-900"></div>
+                            </div>
+                        </div>
+
+                        <div class="text-center text-xs text-slate-400 mb-4">
+                            Refreshes in <span class="font-semibold text-slate-700">14s</span>
+                        </div>
+
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-50 text-emerald-800 text-sm">
+                                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                                <span class="font-medium">Jane Doe</span>
+                                <span class="ml-auto text-xs">12 m away</span>
+                            </div>
+                            <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-50 text-emerald-800 text-sm">
+                                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                                <span class="font-medium">John Smith</span>
+                                <span class="ml-auto text-xs">27 m away</span>
+                            </div>
+                            <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-50 text-slate-500 text-sm">
+                                <i data-lucide="user" class="w-4 h-4"></i>
+                                <span class="font-medium">Waiting…</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ============ TRUST STRIP ============ -->
+<section class="border-y border-slate-200 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <div class="flex items-center justify-center gap-2 text-sm text-slate-600">
+                <i data-lucide="shield-check" class="w-4 h-4 text-brand-600"></i>
+                Location-verified scans
+            </div>
+            <div class="flex items-center justify-center gap-2 text-sm text-slate-600">
+                <i data-lucide="refresh-cw" class="w-4 h-4 text-brand-600"></i>
+                Rotating QR tokens
+            </div>
+            <div class="flex items-center justify-center gap-2 text-sm text-slate-600">
+                <i data-lucide="smartphone" class="w-4 h-4 text-brand-600"></i>
+                Works on any phone
+            </div>
+            <div class="flex items-center justify-center gap-2 text-sm text-slate-600">
+                <i data-lucide="bar-chart-3" class="w-4 h-4 text-brand-600"></i>
+                Live attendance reports
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section id="features" class="py-20 lg:py-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-2xl mx-auto text-center mb-16">
+            <div class="text-sm font-semibold text-brand-600 uppercase tracking-wider mb-3">Features</div>
+            <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">
+                Everything you need to run attendance
+            </h2>
+            <p class="mt-4 text-slate-600">
+                Built for real classrooms — no more paper sheets, no more proxy sign-ins.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-card hover:shadow-lg transition">
+                <div class="w-11 h-11 rounded-xl bg-brand-50 text-brand-600 grid place-items-center mb-4 group-hover:bg-brand-600 group-hover:text-white transition">
+                    <i data-lucide="qr-code" class="w-5 h-5"></i>
+                </div>
+                <h3 class="font-semibold text-slate-900 mb-1.5">Rotating QR codes</h3>
+                <p class="text-sm text-slate-600 leading-relaxed">A fresh QR every 20 seconds makes screenshots useless.</p>
+            </div>
+
+            <div class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-card hover:shadow-lg transition">
+                <div class="w-11 h-11 rounded-xl bg-brand-50 text-brand-600 grid place-items-center mb-4 group-hover:bg-brand-600 group-hover:text-white transition">
+                    <i data-lucide="map-pin" class="w-5 h-5"></i>
+                </div>
+                <h3 class="font-semibold text-slate-900 mb-1.5">GPS geofencing</h3>
+                <p class="text-sm text-slate-600 leading-relaxed">Students must be physically inside the room radius to scan.</p>
+            </div>
+
+            <div class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-card hover:shadow-lg transition">
+                <div class="w-11 h-11 rounded-xl bg-brand-50 text-brand-600 grid place-items-center mb-4 group-hover:bg-brand-600 group-hover:text-white transition">
+                    <i data-lucide="shield-check" class="w-5 h-5"></i>
+                </div>
+                <h3 class="font-semibold text-slate-900 mb-1.5">Anti-proxy protection</h3>
+                <p class="text-sm text-slate-600 leading-relaxed">Server-side distance calculation — client data is never trusted.</p>
+            </div>
+
+            <div class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-card hover:shadow-lg transition">
+                <div class="w-11 h-11 rounded-xl bg-brand-50 text-brand-600 grid place-items-center mb-4 group-hover:bg-brand-600 group-hover:text-white transition">
+                    <i data-lucide="users" class="w-5 h-5"></i>
+                </div>
+                <h3 class="font-semibold text-slate-900 mb-1.5">Multi-role accounts</h3>
+                <p class="text-sm text-slate-600 leading-relaxed">Students, lecturers, and admins each get their own dashboard.</p>
+            </div>
+
+            <div class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-card hover:shadow-lg transition">
+                <div class="w-11 h-11 rounded-xl bg-brand-50 text-brand-600 grid place-items-center mb-4 group-hover:bg-brand-600 group-hover:text-white transition">
+                    <i data-lucide="chart-line" class="w-5 h-5"></i>
+                </div>
+                <h3 class="font-semibold text-slate-900 mb-1.5">Attendance percentages</h3>
+                <p class="text-sm text-slate-600 leading-relaxed">Every student sees their attendance per course in real time.</p>
+            </div>
+
+            <div class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-card hover:shadow-lg transition">
+                <div class="w-11 h-11 rounded-xl bg-brand-50 text-brand-600 grid place-items-center mb-4 group-hover:bg-brand-600 group-hover:text-white transition">
+                    <i data-lucide="file-spreadsheet" class="w-5 h-5"></i>
+                </div>
+                <h3 class="font-semibold text-slate-900 mb-1.5">CSV &amp; report exports</h3>
+                <p class="text-sm text-slate-600 leading-relaxed">Download reports for any course whenever you need them.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section id="how" class="py-20 lg:py-28 bg-slate-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-2xl mx-auto text-center mb-16">
+            <div class="text-sm font-semibold text-brand-400 uppercase tracking-wider mb-3">How it works</div>
+            <h2 class="text-3xl sm:text-4xl font-bold tracking-tight">Three simple steps</h2>
+            <p class="mt-4 text-slate-400">
+                From the lecturer's first click to the student's confirmed attendance — in seconds.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <div>
+                <div class="text-5xl font-bold text-brand-500/30 mb-4 tabular-nums">01</div>
+                <h3 class="text-xl font-semibold mb-2">Lecturer starts the session</h3>
+                <p class="text-slate-400 leading-relaxed">
+                    One click on the dashboard records time and location, and generates a live QR code.
+                </p>
+            </div>
+            <div>
+                <div class="text-5xl font-bold text-brand-500/30 mb-4 tabular-nums">02</div>
+                <h3 class="text-xl font-semibold mb-2">Students scan the code</h3>
+                <p class="text-slate-400 leading-relaxed">
+                    The camera reads the QR, phone location is captured, and the server verifies everything.
+                </p>
+            </div>
+            <div>
+                <div class="text-5xl font-bold text-brand-500/30 mb-4 tabular-nums">03</div>
+                <h3 class="text-xl font-semibold mb-2">Attendance is auto-captured</h3>
+                <p class="text-slate-400 leading-relaxed">
+                    The record is saved with status, timestamp, and distance. Reports update instantly.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ ROLE CARDS ============ -->
+<section id="roles" class="py-20 lg:py-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-2xl mx-auto text-center mb-16">
+            <div class="text-sm font-semibold text-brand-600 uppercase tracking-wider mb-3">Built for everyone</div>
+            <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">Pick your role</h2>
+            <p class="mt-4 text-slate-600">
+                Each user gets a tailored experience — nothing more, nothing less.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+
+            <!-- Student -->
+            <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-card flex flex-col">
+                <div class="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 grid place-items-center mb-5">
+                    <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-slate-900 mb-2">For Students</h3>
+                <ul class="text-sm text-slate-600 space-y-2.5 mb-6 flex-1">
+                    <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i>See all enrolled courses</li>
+                    <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i>Track attendance percentage</li>
+                    <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i>Scan QR to mark yourself present</li>
+                    <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i>Instant confirmation with distance</li>
+                </ul>
+                <a href="auth/register.php"
+                   class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                    Register as student
+                </a>
+            </div>
+
+            <!-- Lecturer (highlighted) -->
+            <div class="relative rounded-2xl border-2 border-brand-500 bg-white p-7 shadow-lg flex flex-col">
+                <span class="absolute -top-3 left-7 inline-flex items-center gap-1 rounded-full bg-brand-600 text-white px-2.5 py-0.5 text-xs font-semibold">
+                    <i data-lucide="star" class="w-3 h-3"></i> Popular
+                </span>
+                <div class="w-12 h-12 rounded-xl bg-brand-50 text-brand-600 grid place-items-center mb-5">
+                    <i data-lucide="presentation" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-slate-900 mb-2">For Lecturers</h3>
+                <ul class="text-sm text-slate-600 space-y-2.5 mb-6 flex-1">
+                    <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i>Start sessions in one click</li>
+                    <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i>Auto-rotating QR display</li>
+                    <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i>Live "who's in" view</li>
+                    <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i>Export attendance reports</li>
+                </ul>
+                <a href="auth/register.php"
+                   class="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 text-white px-4 py-2.5 text-sm font-semibold hover:bg-brand-700">
+                    Register as lecturer
+                </a>
+            </div>
+
+            <!-- Admin -->
+            <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-card flex flex-col">
+                <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 grid place-items-center mb-5">
+                    <i data-lucide="shield" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-slate-900 mb-2">For Admins</h3>
+                <ul class="text-sm text-slate-600 space-y-2.5 mb-6 flex-1">
+                    <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i>Manage all users and roles</li>
+                    <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i>Create and assign courses</li>
+                    <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i>Bulk-enroll students</li>
+                    <li class="flex gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5"></i>Toggle geofencing system-wide</li>
+                </ul>
+                <a href="auth/login.php"
+                   class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                    Admin sign in
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ CTA BANNER ============ -->
+<section class="pb-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-600 to-violet-600 px-8 py-14 sm:px-14 sm:py-16 text-white">
+            <div class="absolute inset-0 opacity-10"
+                 style="background-image: radial-gradient(circle at 20% 20%, white 1px, transparent 1px); background-size: 24px 24px;"></div>
+
+            <div class="relative grid lg:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h2 class="text-3xl sm:text-4xl font-bold tracking-tight">
+                        Ready to modernize attendance?
+                    </h2>
+                    <p class="mt-4 text-brand-100 max-w-lg">
+                        Create an account in under a minute and start running paperless, verified sessions today.
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-3 lg:justify-end">
+                    <a href="auth/register.php"
+                       class="inline-flex items-center gap-2 rounded-lg bg-white text-brand-700 px-5 py-3 text-sm font-semibold hover:bg-slate-100 shadow-sm">
+                        Get started
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                    <a href="auth/login.php"
+                       class="inline-flex items-center gap-2 rounded-lg border border-white/30 text-white px-5 py-3 text-sm font-semibold hover:bg-white/10">
+                        Sign in
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="border-t border-slate-200 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid md:grid-cols-4 gap-8">
+            <div class="md:col-span-2">
+                <div class="flex items-center gap-2.5 mb-3">
+                    <div class="w-9 h-9 rounded-xl bg-brand-600 grid place-items-center text-white font-bold">S</div>
+                    <span class="font-bold text-slate-900">Smart<span class="text-brand-600">Attend</span></span>
+                </div>
+                <p class="text-sm text-slate-500 max-w-sm">
+                    A QR-and-GPS verified attendance system for modern classrooms.
+                </p>
+            </div>
+
+            <div>
+                <div class="text-sm font-semibold text-slate-900 mb-3">Product</div>
+                <ul class="space-y-2 text-sm text-slate-500">
+                    <li><a href="#features" class="hover:text-brand-600">Features</a></li>
+                    <li><a href="#how" class="hover:text-brand-600">How it works</a></li>
+                    <li><a href="#roles" class="hover:text-brand-600">Roles</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <div class="text-sm font-semibold text-slate-900 mb-3">Account</div>
+                <ul class="space-y-2 text-sm text-slate-500">
+                    <li><a href="auth/login.php" class="hover:text-brand-600">Sign in</a></li>
+                    <li><a href="auth/register.php" class="hover:text-brand-600">Register</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="mt-10 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
+            <div>© <span id="year"></span> Smart Attend. All rights reserved.</div>
+            <div>Built with PHP &amp; MySQL</div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Render Lucide icons
+    lucide.createIcons();
+
+    // Auto year
+    document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+<script>
+fetch('auth/whoami.php')
+    .then(r => r.json())
+    .then(d => {
+        if (d.loggedIn) {
+            const map = {
+                student:  'student/dashboard.php',
+                lecturer: 'lecturer/dashboard.php',
+                admin:    'admin/dashboard.php',
+            };
+            location.href = map[d.role] || 'auth/login.php';
+        }
+    })
+    .catch(() => {});
+</script>
+</body>
+</html>
